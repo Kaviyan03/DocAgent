@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DocAgent</title>
+</head>
+<body>
+
+<h2>DocAgent</h2>
+
+<input type="text" id="message">
+
+<button onclick="sendMessage()">
+    Send
+</button>
+
+<p id="response"></p>
+
+<script>
+function sendMessage() {
+
+    let message =
+        document.getElementById("message").value;
+
+    fetch("/chat?message=" + message)
+        .then(response => response.json())
+        .then(data => {
+
+            document.getElementById("response")
+                .innerHTML = data.reply;
+
+        });
+
+}
+</script>
+
+</body>
+</html>
