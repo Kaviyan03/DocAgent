@@ -2,36 +2,81 @@
 <html>
 <head>
     <title>DocAgent</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+    <link rel="stylesheet" href="styles.css">
 <body>
 
-<h2>DocAgent</h2>
+<main class="app-shell">
+    <header class="topbar">
+        <div class="brand-mark" aria-hidden="true">D</div>
+        <div>
+            <p class="eyebrow">DOCUMENT INTELLIGENCE</p>
+            <h1>DocAgent</h1>
+        </div>
+        <span class="service-status"><span class="status-dot"></span>Ready</span>
+    </header>
 
-<input type="text" id="message">
+    <section class="intro">
+        <p class="eyebrow">ASK YOUR DOCUMENT</p>
+        <h2>Find the answer without the digging.</h2>
+        <p class="intro-copy">Upload a PDF, then ask a question in plain language. You can also ask general questions without a document.</p>
+    </section>
 
-<button onclick="sendMessage()">
-    Send
-</button>
+    <section class="workspace">
+        <aside class="document-panel">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">SOURCE</p>
+                    <h3>Your document</h3>
+                </div>
+                <span class="step-number">01</span>
+            </div>
 
-<p id="response"></p>
+            <label class="file-dropzone" for="pdfFile">
+                <span class="upload-icon" aria-hidden="true">↑</span>
+                <span class="dropzone-title">Choose a PDF</span>
+                <span class="dropzone-hint">Click to browse your files</span>
+                <input type="file" id="pdfFile" accept="application/pdf">
+            </label>
 
-<script>
-function sendMessage() {
+            <div class="file-actions">
+                <button class="button button-primary" onclick="uploadPdf()">Upload PDF</button>
+                <button class="button button-quiet" onclick="removePdf()">Remove</button>
+            </div>
+            <p id="uploadStatus" class="status-message" aria-live="polite">No document selected</p>
+        </aside>
 
-    let message =
-        document.getElementById("message").value;
+        <section class="chat-panel">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">CONVERSATION</p>
+                    <h3>Ask a question</h3>
+                </div>
+                <span class="step-number">02</span>
+            </div>
 
-    fetch("/chat?message=" + message)
-        .then(response => response.json())
-        .then(data => {
+            <div class="response-area" id="responseArea">
+                <div class="empty-state" id="emptyState">
+                    <span class="question-mark" aria-hidden="true">?</span>
+                    <p>Your answer will appear here.</p>
+                </div>
+                <p id="response" class="response-text" aria-live="polite"></p>
+            </div>
 
-            document.getElementById("response")
-                .innerHTML = data.reply;
+            <div class="question-form">
+                <label for="message">Question</label>
+                <div class="question-row">
+                    <input type="text" id="message" placeholder="What would you like to know?" autocomplete="off" onkeydown="handleQuestionKey(event)">
+                    <button class="button button-send" onclick="sendMessage()"><span aria-hidden="true">→</span> Send</button>
+                </div>
+                <p class="form-hint">Press Enter to send your question</p>
+            </div>
+        </section>
+    </section>
+</main>
 
-        });
-
-}
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>

@@ -38,8 +38,11 @@ public class AIService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${gemini.api.key}")
-    private String apiKey;
+    @Value("${ollama.url}")
+    private String ollamaUrl;
+
+    @Value("${ollama.model}")
+    private String ollamaModel;
 
     public AIService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -47,36 +50,25 @@ public class AIService {
 
     public String getAIResponse(String message) {
 
-        String url =
-                "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="
-                        + apiKey;
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String body = """
-        {
-          "contents": [
-            {
-              "parts": [
-                {
-                  "text": "%s"
-                }
-              ]
-            }
-          ]
-        }
-        """.formatted(message);
+        Map<String, Object> body = Map.of(
+                "model", ollamaModel,
+                "prompt", message,
+            "stream", false,
+            "think", false,
+            "options", Map.of("num_predict", 256));
 
-        HttpEntity<String> request =
+        HttpEntity<Map<String, Object>> request =
                 new HttpEntity<>(body, headers);
 
-        String response =
+        Map<?, ?> response =
                 restTemplate.postForObject(
-                        url,
+                        ollamaUrl,
                         request,
-                        String.class);
+                        Map.class);
 
-        return response;
+        return response == null ? "Ollama returned no response." : String.valueOf(response.get("response"));
     }
 }

@@ -1,5 +1,6 @@
 package com.chatbot.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,8 +13,10 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+	@Column(columnDefinition = "TEXT")
     private String userMessage;
 
+	@Column(columnDefinition = "TEXT")
     private String botResponse;
     
     
